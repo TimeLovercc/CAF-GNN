@@ -24,6 +24,7 @@ from aif360.sklearn.metrics import consistency_score as cs
 from aif360.sklearn.metrics import generalized_entropy_error as gee
 
 
+
 # Training settings
 parser = argparse.ArgumentParser()
 parser.add_argument('--no-cuda', action='store_true', default=False,
