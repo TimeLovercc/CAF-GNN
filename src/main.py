@@ -168,8 +168,6 @@ def load_callbacks(args):
             logging_interval='epoch'))
     return callbacks
 
-
-
 def main():
     parser = argparse.ArgumentParser(description='CAF')
     parser.add_argument('--dataset_name', type=str, help='dataset name')
