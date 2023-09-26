@@ -224,9 +224,8 @@ def main():
     args.model_config['out_dim'] = class_num if class_num > 2 else 1
 
     model = Train(**vars(args))
-    # wandb_logger = WandbLogger(project=args.project, save_dir=args.log_dir)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    csv_logger = CSVLogger(save_dir=args.log_dir, version=timestamp)
+    csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}', version=timestamp)
     callbacks = load_callbacks(args)
     trainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
                           logger=csv_logger, log_every_n_steps=1, callbacks=callbacks)

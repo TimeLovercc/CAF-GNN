@@ -14,4 +14,4 @@ model_config:
   lr_decay_rate: 0.1
   lr_decay_min_lr: 1.0e-5
 
-  
+epochs: 2000
