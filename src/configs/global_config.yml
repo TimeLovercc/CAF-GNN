@@ -1,0 +1,4 @@
+project: CAF-GNN
+epochs: 500
+alpha: 1
+log_dir: ./logs

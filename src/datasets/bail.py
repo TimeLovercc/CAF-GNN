@@ -37,12 +37,10 @@ class Bail(InMemoryDataset):
         data = data if self.pre_transform is None else self.pre_transform(data)
         self.save([data], self.processed_paths[0])
 
-def read_bail_data():
-    path = '../data/bail/'
+def read_bail_data(path):
     dataset = 'bail'
     sens_attr = "WHITE"
     predict_attr="RECID"
-    path="../dataset/bail/" 
     label_number=1000
 
     # print('Loading {} dataset from {}'.format(dataset, path))
