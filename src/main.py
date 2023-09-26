@@ -38,8 +38,7 @@ class Train(pl.LightningModule):
         loss = self.model.loss(out, batch, mode='train')
         metrics = self.metrics(out, batch, mode='train')
         self.log('train_loss', loss, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
-        for k, v in metrics.items():
-            self.log(f'train_{k}', v, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
+        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
         return loss
     
     def validation_step(self, batch, batch_idx):
@@ -48,8 +47,7 @@ class Train(pl.LightningModule):
         loss = self.model.loss(out, batch, mode='val')
         metrics = self.metrics(out, batch, mode='val')
         self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True, batch_size=1)
-        for k, v in metrics.items():
-            self.log(f'val_{k}', v, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
+        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
         return loss
     
     def test_step(self, batch, batch_idx):
@@ -184,12 +182,12 @@ class DInterface(pl.LightningDataModule):
 
 def load_callbacks(args):
     callbacks = []
-    callbacks.append(plc.EarlyStopping(
-        monitor='val_loss',
-        mode='min',
-        patience=200,
-        min_delta=1
-    ))
+    # callbacks.append(plc.EarlyStopping(
+    #     monitor='val_loss',
+    #     mode='min',
+    #     patience=30,
+    #     min_delta=1
+    # ))
 
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
