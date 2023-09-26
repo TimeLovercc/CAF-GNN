@@ -19,7 +19,7 @@ class GCN(nn.Module):
             self.convs.append(GCNConv(in_dim, hidden_dim))
             for layer in range(layer-2):
                 self.convs.append(GCNConv(hidden_dim, hidden_dim))
-            self.convs.append(GCNConv(hidden_dim, out_dim))
+            self.convs.append(GCNConv(hidden_dim, hidden_dim))
 
         self.fc = nn.Linear(hidden_dim, out_dim)
         if bn == True:
@@ -36,15 +36,14 @@ class GCN(nn.Module):
 
     def forward(self, batch):
         x, edge_index = batch['x'], batch['edge_index']
-        # x = F.dropout(x, p=self.p, training=self.training)
+        x = F.dropout(x, p=self.p, training=self.training)
         for layer in range(self.gc_layer-1):
             x = self.convs[layer](x, edge_index)
             if hasattr(self, 'bns'):
                 x = self.bns[layer](x)
-            # x = F.relu(x)
-            # x = F.dropout(x, p=self.p, training=self.training)
+            x = F.relu(x)
+            x = F.dropout(x, p=self.p, training=self.training)
         x = self.convs[-1](x, edge_index)
-        # x = F.relu(x)
         x = self.fc(x)
         return x.squeeze()
     
