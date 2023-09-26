@@ -1,25 +1,18 @@
-import torch
-import os.path as op
-import numpy as np
-import pickle as pkl
-import torch.utils.data as data
 import os
+import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 from scipy.spatial import distance_matrix
-from torch_geometric.utils import dropout_adj, convert
-from torch_geometric.data import Data
-from sklearn.model_selection import train_test_split
-from torch_geometric.datasets import Planetoid
-from torch_geometric.data import InMemoryDataset
-from torch_geometric.data import Data
-
+import torch
+from torch_geometric.data import Data, InMemoryDataset
+from torch_geometric.utils import convert
 
 class Bail(InMemoryDataset):
-
     def __init__(self, root, transform=None, pre_transform=None, pre_filter=None):
         super().__init__(root, transform, pre_transform, pre_filter)
         self.load(self.processed_paths[0])
+        sens_idx = 1
+        self.data.x[:, sens_idx] = self.data.sens
 
     @property
     def raw_file_names(self):
@@ -41,6 +34,7 @@ def read_bail_data(path):
     dataset = 'bail'
     sens_attr = "WHITE"
     predict_attr="RECID"
+    sens_idx = 0
     label_number=1000
 
     # print('Loading {} dataset from {}'.format(dataset, path))

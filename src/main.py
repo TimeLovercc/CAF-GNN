@@ -1,28 +1,28 @@
-import yaml
-from pathlib import Path
-import inspect
-import sys
-from typing import Any, Optional
-from pytorch_lightning.utilities.types import STEP_OUTPUT
-import torch
-from pytorch_lightning import Trainer
-import importlib
-import pytorch_lightning.callbacks as plc
-from torch_geometric.loader import DataLoader
-from torch.nn import functional as F
-import torch.optim.lr_scheduler as lrs
-from datetime import datetime
-import numpy as np
-import pytorch_lightning as pl
-from sklearn.svm import LinearSVC, SVC
 import argparse
-from pytorch_lightning.loggers import WandbLogger, CSVLogger
-import wandb
-from collections import OrderedDict
+import importlib
+import inspect
+import yaml
+import sys
+from datetime import datetime
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.optim.lr_scheduler as lrs
 import torch_geometric.transforms as T
-from torchmetrics.functional.classification import binary_accuracy, multiclass_accuracy
-from torchmetrics.functional.classification import binary_f1_score, multiclass_f1_score
-from torchmetrics.functional.classification import binary_auroc, multiclass_auroc
+import pytorch_lightning as pl
+import pytorch_lightning.callbacks as plc
+from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import CSVLogger, WandbLogger
+from torch_geometric.loader import DataLoader
+from torchmetrics.functional.classification import (
+    binary_accuracy,
+    binary_auroc,
+    binary_f1_score,
+    multiclass_accuracy,
+    multiclass_auroc,
+    multiclass_f1_score,
+)
 
 torch.set_float32_matmul_precision('medium')
 
