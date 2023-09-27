@@ -3,8 +3,8 @@ data_config:
   transform: null
 
 model_config:
-  hidden_dim: 16
-  dropout: 0.5
+  hidden_dim: 32
+  dropout: 0
   gc_layer: 1
   bn: false
   weight_decay: 1.0e-5
