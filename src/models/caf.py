@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv
 
 
-class Our_SAGE(nn.Module):
+class CAF(nn.Module):
     def __init__(self, nfeat, nhid, nclass, dropout): 
-        super(Our_SAGE, self).__init__()
+        super().__init__()
         self.conv1 = SAGEConv(nfeat, nhid, normalize=True)
         self.conv1.aggr = 'mean'
         self.transition = nn.Sequential(
