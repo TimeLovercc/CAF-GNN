@@ -12,9 +12,9 @@ class GCN(nn.Module):
         self.convs = nn.ModuleList([GCNConv(in_dim if i == 0 else hidden_dim, hidden_dim) for i in range(gc_layer)])
         self.bns = nn.ModuleList([nn.BatchNorm1d(hidden_dim) for _ in range(gc_layer - 1)]) if bn else None
         self.fc = nn.Linear(hidden_dim, out_dim)
-        self.weight_init()
+        self.weights_init()
 
-    def weight_init(self):
+    def weights_init(self):
         for m in self.modules():
             if isinstance(m, nn.Linear):
                 torch.nn.init.xavier_uniform_(m.weight.data)

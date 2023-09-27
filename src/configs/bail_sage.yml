@@ -1,0 +1,17 @@
+data_config:
+  root: ./data/bail
+  transform: normalize
+
+model_config:
+  hidden_dim: 32
+  dropout: 0.5
+  gc_layer: 2
+  bn: false
+  weight_decay: 1.0e-5
+  lr: 1.0e-2
+  lr_scheduler: null
+  lr_decay_steps: 20
+  lr_decay_rate: 0.1
+  lr_decay_min_lr: 1.0e-5
+
+  

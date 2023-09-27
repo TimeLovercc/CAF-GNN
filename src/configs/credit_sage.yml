@@ -1,0 +1,18 @@
+data_config:
+  root: ./data/credit
+  transform: null
+
+model_config:
+  hidden_dim: 32
+  dropout: 0
+  gc_layer: 2
+  bn: false
+  weight_decay: 1.0e-5
+  lr: 5.0e-4
+  lr_scheduler: null
+  lr_decay_steps: 20
+  lr_decay_rate: 0.1
+  lr_decay_min_lr: 1.0e-5
+
+epochs: 2000
+  
