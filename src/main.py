@@ -191,7 +191,7 @@ def load_callbacks(args):
 
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
-        filename='best-{epoch:02d}-{val_loss:.3f}',
+        filename='best',
         save_top_k=1,
         mode='min',
         save_last=True
@@ -231,6 +231,11 @@ def main():
                           logger=csv_logger, log_every_n_steps=1, callbacks=callbacks)
     trainer.fit(model, datamodule=data_module)
     trainer.test(model, datamodule=data_module)
+
+    if args.model_name == 'caf':
+        model.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
+        trainer.fit(model, datamodule=data_module)
+        trainer.test(model, datamodule=data_module)
 
 if __name__ == "__main__":
     main()
