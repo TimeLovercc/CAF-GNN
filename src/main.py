@@ -29,13 +29,18 @@ torch.set_float32_matmul_precision('medium')
 class Train(pl.LightningModule):
     def __init__(self, **kargs):
         super().__init__()
+        self.retrain = False
         self.save_hyperparameters()
         self.load_model()
 
     def training_step(self, batch, batch_idx):
         batch = batch[0]
         out = self.model(batch)
-        loss = self.model.loss(out, batch, mode='train')
+        if self.hparams.model_name == 'caf':
+            loss = self.model.loss(out, batch, mode='train', retrain=self.retrain, epoch=self.current_epoch, \
+                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+        else:
+            loss = self.model.loss(out, batch, mode='train')
         metrics = self.metrics(out, batch, mode='train')
         self.log('train_loss', loss, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
         self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
@@ -44,7 +49,11 @@ class Train(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         batch = batch[0]
         out = self.model(batch)
-        loss = self.model.loss(out, batch, mode='val')
+        if self.hparams.model_name == 'caf':
+            loss = self.model.loss(out, batch, mode='val', retrain=self.retrain, epoch=self.current_epoch, \
+                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+        else:
+            loss = self.model.loss(out, batch, mode='val')
         metrics = self.metrics(out, batch, mode='val')
         self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True, batch_size=1)
         self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
@@ -53,7 +62,11 @@ class Train(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         batch = batch[0]
         out = self.model(batch)
-        loss = self.model.loss(out, batch, mode='test')
+        if self.hparams.model_name == 'caf':
+            loss = self.model.loss(out, batch, mode='test', retrain=self.retrain, epoch=self.current_epoch, \
+                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+        else:
+            loss = self.model.loss(out, batch, mode='test')
         metrics = self.metrics(out, batch, mode='test')
         self.log('test_loss', loss, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
         self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=False, batch_size=1)
@@ -186,7 +199,7 @@ def load_callbacks(args):
     #     monitor='val_loss',
     #     mode='min',
     #     patience=30,
-    #     min_delta=1
+    #     min_delta=0.001,
     # ))
 
     callbacks.append(plc.ModelCheckpoint(
@@ -234,6 +247,7 @@ def main():
 
     if args.model_name == 'caf':
         model.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
+        model.retrain = True
         trainer.fit(model, datamodule=data_module)
         trainer.test(model, datamodule=data_module)
 

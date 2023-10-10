@@ -3,6 +3,9 @@ data_config:
   transform: null
 
 model_config:
+  tepoch: 10
+  dist_mode: MSE
+  indices_num: 10
   hidden_dim: 32
   dropout: 0
   gc_layer: 1
