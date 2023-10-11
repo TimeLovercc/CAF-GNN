@@ -39,7 +39,8 @@ class CAF(nn.Module):
         x = self.conv1(x, edge_index)
         x = self.transition(x)
         embed = self.conv2(x, edge_index)
-        return self.fc(embed[:,:int(embed.shape[1]/2)]), embed
+        preds = self.fc(embed[:,:int(embed.shape[1]/2)])
+        return preds.squeeze(), embed
 
     def sens_pred(self, embed):
         sens = self.sens_fc(embed[:,int(embed.shape[1]/2):])
@@ -52,10 +53,10 @@ class CAF(nn.Module):
         if retrain == False:
             return loss_pred
         else:
-            if epoch % self.tepoch==0:
+            if (epoch % self.tepoch) == 0:
                 indices1, indices2 = self.find_counterfactuals(embed, preds, sens, indices_num)
                 self.indices1, self.indices2 = indices1, indices2
-            causal_loss, style_loss = self.calculate_causal_loss(embed, indices1, indices2, dist_mode, indices_num)
+            causal_loss, style_loss = self.calculate_causal_loss(embed, self.indices1, self.indices2, dist_mode, indices_num)
             disentangle_loss = self.calculate_disentangle_loss(embed)
             rec_loss = self.calculate_reconstruction_loss(embed, batch['edge_index'])
             sens_loss = self.calculate_sens_loss(embed, sens)
@@ -67,11 +68,12 @@ class CAF(nn.Module):
         if preds.dim() == 1:
             return F.binary_cross_entropy_with_logits(preds[mask], labels[mask].float())
         elif preds.dim() == 2:
-            return F.cross_entropy(preds[mask], labels[mask])
+            return F.cross_entropy(preds[mask], labels[mask].float())
         
     def calculate_causal_loss(self, embed, indices1, indices2, dist_mode, indices_num):
         half_dim = int(embed.shape[1]/2)
         causal_embed, style_embed = embed[:, :half_dim], embed[:, half_dim:]
+        causal_loss, style_loss = 0, 0
         for i in range(indices_num):
             if dist_mode == 'L1':
                 causal_loss +=  torch.mean(torch.abs(causal_embed - causal_embed[indices1[:,i], :]))
@@ -105,9 +107,6 @@ class CAF(nn.Module):
         sens_output = self.sens_pred(embed)
         sens_loss = F.binary_cross_entropy_with_logits(sens_output, sens.unsqueeze(1).float())
         return sens_loss
-
-    
-
 
     def find_counterfactuals(self, embed, preds, sens, indices_num):
         embed = embed.detach()

@@ -114,7 +114,7 @@ class Train(pl.LightningModule):
         return Model(**args1)
     
     def metrics(self, out, batch, mode):
-        preds = out
+        preds = out if self.hparams.model_name != 'caf' else out[0]
         labels, sens, mask = batch['y'], batch['sens'], batch[f'{mode}_mask']
         if self.hparams.model_config['out_dim'] == 1:
             acc = binary_accuracy(preds[mask], labels[mask])
@@ -219,6 +219,32 @@ def load_callbacks(args):
             logging_interval='epoch'))
     return callbacks
 
+def load_retrain_callbacks(args):
+    callbacks = []
+    # callbacks.append(plc.EarlyStopping(
+    #     monitor='val_loss',
+    #     mode='min',
+    #     patience=30,
+    #     min_delta=0.001,
+    # ))
+
+    callbacks.append(plc.ModelCheckpoint(
+        monitor='val_loss',
+        filename='best',
+        save_top_k=1,
+        mode='min',
+        save_last=True
+    ))
+
+    callbacks.append(plc.RichProgressBar(
+        refresh_rate=1
+    ))
+
+    if args.model_config['lr_scheduler'] != None:
+        callbacks.append(plc.LearningRateMonitor(
+            logging_interval='epoch'))
+    return callbacks
+
 def main():
     parser = argparse.ArgumentParser(description='CAF')
     parser.add_argument('--dataset_name', type=str, help='dataset name')
@@ -248,8 +274,12 @@ def main():
     if args.model_name == 'caf':
         model.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
         model.retrain = True
-        trainer.fit(model, datamodule=data_module)
-        trainer.test(model, datamodule=data_module)
+        retrain_csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}_retrain', version=timestamp)
+        callbacks = load_retrain_callbacks(args)
+        retrainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
+                          logger=retrain_csv_logger, log_every_n_steps=1, callbacks=callbacks)
+        retrainer.fit(model, datamodule=data_module)
+        retrainer.test(model, datamodule=data_module)
 
 if __name__ == "__main__":
     main()
