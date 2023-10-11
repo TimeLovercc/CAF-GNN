@@ -196,13 +196,6 @@ class DInterface(pl.LightningDataModule):
 
 def load_callbacks(args):
     callbacks = []
-    # callbacks.append(plc.EarlyStopping(
-    #     monitor='val_loss',
-    #     mode='min',
-    #     patience=30,
-    #     min_delta=0.001,
-    # ))
-
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
         filename='best',
@@ -222,13 +215,6 @@ def load_callbacks(args):
 
 def load_retrain_callbacks(args):
     callbacks = []
-    # callbacks.append(plc.EarlyStopping(
-    #     monitor='val_loss',
-    #     mode='min',
-    #     patience=30,
-    #     min_delta=0.001,
-    # ))
-
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
         filename='best',
@@ -277,7 +263,7 @@ def main():
         model.retrain = True
         retrain_csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}_retrain', version=timestamp)
         callbacks = load_retrain_callbacks(args)
-        retrainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
+        retrainer = Trainer(max_epochs=args.retrain_config['epochs'], accelerator='gpu',\
                           logger=retrain_csv_logger, log_every_n_steps=1, callbacks=callbacks)
         retrainer.fit(model, datamodule=data_module)
         retrainer.test(model, datamodule=data_module)
