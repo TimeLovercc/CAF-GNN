@@ -16,7 +16,7 @@ model_config:
 
 retrain_config:
   tepoch: 10
-  dist_mode: L1
+  dist_mode: cosine
   indices_num: 6
   lr: 1.0e-4
   weight_decay: 1.0e-5
@@ -25,4 +25,4 @@ retrain_config:
   disentangle_coeff: 1
   rec_coeff: 0
 
-epochs: 500
+epochs: 100
