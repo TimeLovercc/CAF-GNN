@@ -37,8 +37,7 @@ class Train(pl.LightningModule):
         batch = batch[0]
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
-            loss = self.model.loss(out, batch, mode='train', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
+            loss = self.model.loss(out, batch, mode='train', retrain=self.retrain, epoch=self.current_epoch, retrain_config=self.hparams.retrain_config)
         else:
             loss = self.model.loss(out, batch, mode='train')
         metrics = self.metrics(out, batch, mode='train')
@@ -50,8 +49,7 @@ class Train(pl.LightningModule):
         batch = batch[0]
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
-            loss = self.model.loss(out, batch, mode='val', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
+            loss = self.model.loss(out, batch, mode='val', retrain=self.retrain, epoch=self.current_epoch, retrain_config=self.hparams.retrain_config)                                
         else:
             loss = self.model.loss(out, batch, mode='val')
         metrics = self.metrics(out, batch, mode='val')
@@ -63,8 +61,7 @@ class Train(pl.LightningModule):
         batch = batch[0]
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
-            loss = self.model.loss(out, batch, mode='test', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
+            loss = self.model.loss(out, batch, mode='test', retrain=self.retrain, epoch=self.current_epoch, retrain_config=self.hparams.retrain_config)
         else:
             loss = self.model.loss(out, batch, mode='test')
         metrics = self.metrics(out, batch, mode='test')

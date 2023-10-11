@@ -45,7 +45,8 @@ class CAF(nn.Module):
         sens = self.sens_fc(embed[:,int(embed.shape[1]/2):])
         return sens
     
-    def loss(self, out, batch, mode, retrain, epoch, dist_mode, indices_num, tepoch):
+    def loss(self, out, batch, mode, retrain, epoch, retrain_config):
+        tepoch, causal_coeff, disentangle_coeff, rec_coeff, dist_mode, indices_num = retrain_config['tepoch'], retrain_config['causal_coeff'], retrain_config['disentangle_coeff'], retrain_config['rec_coeff'], retrain_config['dist_mode'], retrain_config['indices_num']
         preds, embed = out 
         labels, sens, mask = batch['y'], batch['sens'], batch[f'{mode}_mask']
         loss_pred = self.calculate_prediction_loss(preds, labels, mask)
@@ -59,9 +60,8 @@ class CAF(nn.Module):
             disentangle_loss = self.calculate_disentangle_loss(embed)
             rec_loss = self.calculate_reconstruction_loss(embed, batch['edge_index'])
             sens_loss = self.calculate_sens_loss(embed, sens)
-            loss_total = loss_pred + causal_loss + style_loss + disentangle_loss + rec_loss + sens_loss
+            loss_total = loss_pred + causal_coeff * (causal_loss + style_loss) + disentangle_coeff * disentangle_loss + rec_coeff * rec_loss + sens_loss
             return loss_total
-
 
     def calculate_prediction_loss(self, preds, labels, mask):
         if preds.dim() == 1:
