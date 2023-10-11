@@ -38,7 +38,7 @@ class Train(pl.LightningModule):
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
             loss = self.model.loss(out, batch, mode='train', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
         else:
             loss = self.model.loss(out, batch, mode='train')
         metrics = self.metrics(out, batch, mode='train')
@@ -51,7 +51,7 @@ class Train(pl.LightningModule):
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
             loss = self.model.loss(out, batch, mode='val', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
         else:
             loss = self.model.loss(out, batch, mode='val')
         metrics = self.metrics(out, batch, mode='val')
@@ -64,7 +64,7 @@ class Train(pl.LightningModule):
         out = self.model(batch)
         if self.hparams.model_name == 'caf':
             loss = self.model.loss(out, batch, mode='test', retrain=self.retrain, epoch=self.current_epoch, \
-                                   dist_mode=self.hparams.model_config['dist_mode'], indices_num=self.hparams.model_config['indices_num'])
+                                   dist_mode=self.hparams.retrain_config['dist_mode'], indices_num=self.hparams.retrain_config['indices_num'], tepoch=self.hparams.retrain_config['tepoch'])
         else:
             loss = self.model.loss(out, batch, mode='test')
         metrics = self.metrics(out, batch, mode='test')
@@ -74,10 +74,11 @@ class Train(pl.LightningModule):
     
     def configure_optimizers(self):
         if 'weight_decay' in  self.hparams.model_config.keys():
-            weight_decay = self.hparams.model_config['weight_decay']
+            weight_decay = self.hparams.model_config['weight_decay'] if self.retrain == False else self.hparams.retrain_config['weight_decay']
         else:
             weight_decay = 0
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.hparams.model_config['lr'], weight_decay=weight_decay)
+        lr = self.hparams.model_config['lr'] if self.retrain == False else self.hparams.retrain_config['lr']
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
         if self.hparams.model_config['lr_scheduler'] == None:
             return optimizer
         else:

@@ -18,6 +18,8 @@ retrain_config:
   tepoch: 10
   dist_mode: MSE
   indices_num: 10
+  lr: 5.0e-4
+  weight_decay: 1.0e-5
 
-epochs: 100
+epochs: 50
   

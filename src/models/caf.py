@@ -6,9 +6,8 @@ from torch_geometric.nn import InnerProductDecoder
 from torch_geometric.utils import negative_sampling
 
 class CAF(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, dropout, gc_layer, bn, tepoch):
+    def __init__(self, in_dim, hidden_dim, out_dim, dropout, gc_layer, bn):
         super().__init__()
-        self.tepoch = tepoch
 
         self.conv1 = SAGEConv(in_dim, hidden_dim, normalize=True)
         self.conv1.aggr = 'mean'
@@ -46,14 +45,14 @@ class CAF(nn.Module):
         sens = self.sens_fc(embed[:,int(embed.shape[1]/2):])
         return sens
     
-    def loss(self, out, batch, mode, retrain, epoch, dist_mode, indices_num):
+    def loss(self, out, batch, mode, retrain, epoch, dist_mode, indices_num, tepoch):
         preds, embed = out 
         labels, sens, mask = batch['y'], batch['sens'], batch[f'{mode}_mask']
         loss_pred = self.calculate_prediction_loss(preds, labels, mask)
         if retrain == False:
             return loss_pred
         else:
-            if (epoch % self.tepoch) == 0:
+            if (epoch % tepoch) == 0:
                 indices1, indices2 = self.find_counterfactuals(embed, preds, sens, indices_num)
                 self.indices1, self.indices2 = indices1, indices2
             causal_loss, style_loss = self.calculate_causal_loss(embed, self.indices1, self.indices2, dist_mode, indices_num)
