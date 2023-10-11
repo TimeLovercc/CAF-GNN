@@ -3,9 +3,6 @@ data_config:
   transform: null
 
 model_config:
-  tepoch: 10
-  dist_mode: MSE
-  indices_num: 10
   hidden_dim: 32
   dropout: 0
   gc_layer: 1
@@ -16,5 +13,10 @@ model_config:
   lr_decay_steps: 20
   lr_decay_rate: 0.1
   lr_decay_min_lr: 1.0e-5
+
+retrain_config:
+  tepoch: 10
+  dist_mode: MSE
+  indices_num: 10
 
 epochs: 100
