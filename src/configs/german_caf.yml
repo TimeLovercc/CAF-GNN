@@ -15,7 +15,7 @@ model_config:
   lr_decay_min_lr: 1.0e-5
 
 retrain_config:
-  tepoch: 10
+  tepoch: 1
   dist_mode: L2
   indices_num: 6
   lr: 1.0e-4

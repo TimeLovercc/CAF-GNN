@@ -214,10 +214,10 @@ def load_callbacks(args):
 def load_retrain_callbacks(args):
     callbacks = []
     callbacks.append(plc.ModelCheckpoint(
-        monitor='val_loss',
+        monitor='val_fair',
         filename='{epoch}-best', 
         save_top_k=1,
-        mode='min',
+        mode='max',
         save_last=True
     ))
 
@@ -256,20 +256,20 @@ def main():
         trainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
                             logger=csv_logger, log_every_n_steps=1, callbacks=callbacks)
         trainer.fit(model, datamodule=data_module)
-        trainer.test(model, datamodule=data_module)
+        trainer.test(model, datamodule=data_module, ckpt_path='best')
 
     if args.model_name == 'caf':
         best_checkpoint = find_latest_best_checkpoint(Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}')
         best_model_path = best_checkpoint if args.no_train == True else trainer.checkpoint_callback.best_model_path
         model = Train.load_from_checkpoint(best_model_path, **vars(args))
-        print(f'Loaded best model from {best_model_path}')
+        # print(f'Loaded best model from {best_model_path}')
         model.retrain = True
         retrain_csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}_retrain', version=timestamp)
         callbacks = load_retrain_callbacks(args)
         retrainer = Trainer(max_epochs=args.retrain_config['epochs'], accelerator='gpu',\
                           logger=retrain_csv_logger, log_every_n_steps=1, callbacks=callbacks)
         retrainer.fit(model, datamodule=data_module)
-        retrainer.test(model, datamodule=data_module)
+        retrainer.test(model, datamodule=data_module, ckpt_path='best')
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,3 @@
 
 # try bail GCN
-CUDA_VISIBLE_DEVICES=2 python ./src/main.py --dataset_name german --model_name caf --seed 3 --no_train
+CUDA_VISIBLE_DEVICES=2 python ./src/main.py --dataset_name bail --model_name caf --seed 4
