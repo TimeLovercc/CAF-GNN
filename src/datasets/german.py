@@ -35,7 +35,7 @@ def read_german_data(path):
     sens_attr = 'Gender'
     predict_attr = 'GoodCustomer'
     sens_idx = 0
-    label_number = 1000
+    label_number = 100
 
     # print('Loading {} dataset from {}'.format(dataset, path))
     idx_features_labels = pd.read_csv(os.path.join(path,"{}.csv".format(dataset)))

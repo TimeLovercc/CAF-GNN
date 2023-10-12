@@ -23,6 +23,7 @@ from torchmetrics.functional.classification import (
     multiclass_auroc,
     multiclass_f1_score,
 )
+from utils import find_latest_best_checkpoint
 
 torch.set_float32_matmul_precision('medium')
 
@@ -195,7 +196,7 @@ def load_callbacks(args):
     callbacks = []
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
-        filename='best',
+        filename='{epoch}-best', 
         save_top_k=1,
         mode='min',
         save_last=True
@@ -214,7 +215,7 @@ def load_retrain_callbacks(args):
     callbacks = []
     callbacks.append(plc.ModelCheckpoint(
         monitor='val_loss',
-        filename='best',
+        filename='{epoch}-best', 
         save_top_k=1,
         mode='min',
         save_last=True
@@ -234,6 +235,7 @@ def main():
     parser.add_argument('--dataset_name', type=str, help='dataset name')
     parser.add_argument('--model_name', type=str, help='model name')
     parser.add_argument('--seed', type=int, help='random seed')
+    parser.add_argument('--no_train', action='store_true', help='no train')
     args = parser.parse_args()
     config_dir = Path('./src/configs')
     global_config = yaml.safe_load((config_dir / 'global_config.yml').open('r'))
@@ -248,15 +250,19 @@ def main():
 
     model = Train(**vars(args))
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}', version=timestamp)
-    callbacks = load_callbacks(args)
-    trainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
-                          logger=csv_logger, log_every_n_steps=1, callbacks=callbacks)
-    trainer.fit(model, datamodule=data_module)
-    trainer.test(model, datamodule=data_module)
+    if args.no_train == False:
+        csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}', version=timestamp)
+        callbacks = load_callbacks(args)
+        trainer = Trainer(max_epochs=args.epochs, accelerator='gpu',\
+                            logger=csv_logger, log_every_n_steps=1, callbacks=callbacks)
+        trainer.fit(model, datamodule=data_module)
+        trainer.test(model, datamodule=data_module)
 
     if args.model_name == 'caf':
-        model.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
+        best_checkpoint = find_latest_best_checkpoint(Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}')
+        best_model_path = best_checkpoint if args.no_train == True else trainer.checkpoint_callback.best_model_path
+        model = Train.load_from_checkpoint(best_model_path, **vars(args))
+        print(f'Loaded best model from {best_model_path}')
         model.retrain = True
         retrain_csv_logger = CSVLogger(save_dir=Path(args.log_dir) / f'{args.dataset_name}_{args.model_name}_retrain', version=timestamp)
         callbacks = load_retrain_callbacks(args)

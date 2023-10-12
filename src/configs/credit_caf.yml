@@ -16,10 +16,14 @@ model_config:
 
 retrain_config:
   tepoch: 10
-  dist_mode: MSE
-  indices_num: 10
-  lr: 5.0e-4
+  dist_mode: cosine
+  indices_num: 20
+  lr: 1.0e-2
   weight_decay: 1.0e-5
+  epochs: 100
+  causal_coeff: 1.0
+  disentangle_coeff: 2.0
+  rec_coeff: 2.0
 
-epochs: 50
+epochs: 500
   

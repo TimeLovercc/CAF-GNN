@@ -8,10 +8,10 @@ model_config:
   gc_layer: 1
   bn: false
   weight_decay: 1.0e-5
-  lr: 1.0e-3
+  lr: 1.0e-4
   lr_scheduler: null
   lr_decay_steps: 20
   lr_decay_rate: 0.1
   lr_decay_min_lr: 1.0e-5
 
-epochs: 500
+epochs: 1000
