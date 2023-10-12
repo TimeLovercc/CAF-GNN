@@ -17,12 +17,12 @@ model_config:
 retrain_config:
   tepoch: 10
   dist_mode: cosine
-  indices_num: 6
+  indices_num: 3
   lr: 1.0e-4
   weight_decay: 1.0e-5
   epochs: 100
-  causal_coeff: 50
-  disentangle_coeff: 1
-  rec_coeff: 0
+  causal_coeff: 1
+  disentangle_coeff: 0.5
+  rec_coeff: 0.5
 
 epochs: 100

@@ -18,7 +18,7 @@ retrain_config:
   tepoch: 10
   dist_mode: cosine
   indices_num: 20
-  lr: 1.0e-2
+  lr: 1.0e-4
   weight_decay: 1.0e-5
   epochs: 100
   causal_coeff: 1.0
