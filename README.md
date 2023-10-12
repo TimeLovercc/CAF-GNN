@@ -9,7 +9,7 @@ We're excited to announce that our repository has recently transitioned to using
 ### ⚠️ Warning
 While we are thrilled about the transition to PyTorch Lightning, it’s important to note that the transfer from the original codebase is not thoroughly verified and may contain small mistakes or inconsistencies. We appreciate your understanding and encourage users to raise any issues or discrepancies found, ensuring continual improvement and refinement of the codebase. Feel free to open an issue for any problems or suggestions you might have!
 
-![Figure](https://github.com/TimeLovercc/CAF-GNN/blob/main/assets/visual.pdf)
+![Figure](https://github.com/TimeLovercc/CAF-GNN/blob/main/assets/visual.png)
 
 ## Installation
 To set up the necessary environment, follow the steps below:
