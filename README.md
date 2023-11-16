@@ -62,7 +62,7 @@ CUDA_VISIBLE_DEVICES=[GPU_ID] python ./src/main.py --dataset_name [DATASET] --mo
 - `[SEED]` is an integer for the random seed.
 - Adding `--no_train` is optional and it tells the system to skip the training phase and instead load the latest trained base model.
 
-For instance, to run the application on the 'bail' dataset using the 'sage' model with a specific seed, you would use:
+For instance, to run the application on the 'german' dataset using the 'sage' model with a specific seed, you would use:
 ```
 CUDA_VISIBLE_DEVICES=2 python ./src/main.py --dataset_name german --model_name sage --seed 2
 ```
