@@ -29,3 +29,5 @@ pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -
 pip install pytorch_lightning==2.0.4
 pip install torchvision==0.15.0
 pip install wandb
+pip install pandas
+pip install rich
