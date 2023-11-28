@@ -11,7 +11,7 @@ class Credit(InMemoryDataset):
     def __init__(self, root, transform=None, pre_transform=None, pre_filter=None):
         super().__init__(root, transform, pre_transform, pre_filter)
         self.load(self.processed_paths[0])
-        sens_idx = 0
+        sens_idx = 1
         self.data.x[:, sens_idx] = self.data.sens
     
     @property
