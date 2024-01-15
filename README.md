@@ -103,6 +103,15 @@ Please repeat the process for each dataset you plan to use. Ensure the files are
 
 After setting up the data, proceed with the usage instructions as described in the Usage section.
 
+## Reproduce Guidance
+To successfully reproduce our results, you need to follow a two-step process focusing on model selection and training methodologies.
+
+- Step 1: Selecting a Suitable Pretrained Model
+  First and foremost, identify a high-quality pretrained model. The criteria for 'good' in this context are based on comparative performance metrics such as F1 Score, Area Under the Receiver Operating Characteristic Curve (AUROC), and Accuracy (ACC). These metrics will guide you in choosing a model that has demonstrated proficiency in similar tasks or datasets.
+
+-  Step 2: Fine-Tuning with the Pretrained Model
+  After selecting your pretrained model, the next step involves fine-tuning. Initiate this process by using the --no_train flag. This command is instrumental in adjusting the pretrained model to your specific dataset without initiating full training from scratch.
+
 
 ## Contributing
 We welcome contributions that improve the code, documentation, or other aspects of the project. If you're interested in contributing, please start by discussing the change you wish to make via an issue. Afterward, you can make your changes and create a pull request.
