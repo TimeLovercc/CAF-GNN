@@ -124,7 +124,7 @@ class Train(pl.LightningModule):
             f1 = multiclass_f1_score(preds[mask], labels[mask], num_classes=self.hparams.out_dim, average='micro')
             auroc = multiclass_auroc(preds[mask], labels[mask], num_classes=self.hparams.out_dim, average='macro')
         parity, equality = self.binary_fair_metrics(preds[mask], labels[mask], sens[mask])
-        fair = acc + f1 + auroc - self.hparams.alpha * (parity + equality)
+        fair = (1 - self.hparams.alpha) * (acc + f1 + auroc) - self.hparams.alpha * (parity + equality)
         return {f'{mode}_acc': acc, f'{mode}_f1': f1, f'{mode}_auroc': auroc, f'{mode}_parity': parity, \
                 f'{mode}_equality': equality, f'{mode}_fair': fair}
     

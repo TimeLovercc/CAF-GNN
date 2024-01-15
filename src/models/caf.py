@@ -86,6 +86,9 @@ class CAF(nn.Module):
             elif dist_mode == 'cosine':
                 causal_loss +=  1-F.cosine_similarity(causal_embed, causal_embed[indices1[:,i], :]).mean()
                 style_loss +=  1-F.cosine_similarity(style_embed, style_embed[indices2[:,i], :]).mean()
+            elif dist_mode == 'abscosine':
+                causal_loss +=  1-torch.abs(F.cosine_similarity(causal_embed, causal_embed[indices1[:,i], :])).mean()
+                style_loss +=  1-torch.abs(F.cosine_similarity(style_embed, style_embed[indices2[:,i], :])).mean()
         return causal_loss, style_loss
     
     def calculate_disentangle_loss(self, embed):

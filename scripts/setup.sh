@@ -24,7 +24,7 @@ conda activate pytorch
 pip install torch==2.0.1
 pip install https://download.pytorch.org/whl/cu118/torch-2.0.0%2Bcu118-cp39-cp39-linux_x86_64.whl
 echo "Setup completed. PyTorch environment is ready!"
-pip install torch_geometric==2.3.1
+pip install torch_geometric==2.4.0
 pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.0.0+cu118.html
 pip install pytorch_lightning==2.0.4
 pip install torchvision==0.15.0
