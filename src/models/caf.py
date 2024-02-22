@@ -59,7 +59,8 @@ class CAF(nn.Module):
             causal_loss, style_loss = self.calculate_causal_loss(embed, self.indices1, self.indices2, dist_mode, indices_num)
             disentangle_loss = self.calculate_disentangle_loss(embed)
             rec_loss = self.calculate_reconstruction_loss(embed, batch['edge_index'])
-            sens_loss = self.calculate_sens_loss(embed, sens)
+            # sens_loss = self.calculate_sens_loss(embed, sens)
+            sens_loss = 0
             loss_total = loss_pred + causal_coeff * (causal_loss + style_loss) + disentangle_coeff * disentangle_loss + rec_coeff * rec_loss + sens_loss
             return loss_total
 
