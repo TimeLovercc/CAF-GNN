@@ -128,14 +128,14 @@ class CAF(nn.Module):
         distance = (distance - distance.min()) / (distance.max() - distance.min())
 
         # Find indices
-        indices1 = self.find_indices(distance.cpu(), select_adj, indices_num)
-        indices2 = self.find_indices(distance.cpu(), select_adj2, indices_num)
+        indices1 = self.find_indices(distance.cpu(), select_adj2, indices_num)
+        indices2 = self.find_indices(distance.cpu(), select_adj, indices_num)
         
         return indices1, indices2
 
 
     def find_indices(self, distance, select_adj, num_indices):
         distance = distance.clone()
-        distance[select_adj] = float('inf')
+        distance[~select_adj] = float('inf')
         _, indices = torch.topk(distance, num_indices, largest=False)
         return indices
