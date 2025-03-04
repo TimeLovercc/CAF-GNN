@@ -115,8 +115,8 @@ class CAF(nn.Module):
         embed = embed.detach()
     
         # Compute label_pair and sens_pair
-        pseudo_label = preds.reshape(-1, 1).bool()
-        sens_torch = sens.reshape(-1, 1).bool()
+        pseudo_label = preds.reshape(-1, 1).sigmoid().bool()
+        sens_torch = sens.reshape(-1, 1).sigmoid().bool()
         label_pair = pseudo_label.eq(pseudo_label.t())
         sens_pair = sens_torch.eq(sens_torch.t())
 
